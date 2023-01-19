@@ -23,7 +23,7 @@ To obtain a merkle leaf one must follow the script defined in `merkle_leaf.py` w
 
 ## Verifying a Merkle Proof
 
-The process of verifying a Merkle Proof is quite straightforward: From the leaf, combine at each step the current node with the node referenced in each step of the proof with the algorithm described in the [algorithm](docs/MerkleTree.md#algorithm) section. Then at the last step we should obtain the root hash, we must assert that the hashes and the balances are equal to verify that the proof for that leaf is correct.
+The process of verifying a Merkle Proof is quite straightforward: From the leaf, combine at each step the current node with the node referenced in each step of the proof with the algorithm described in the [algorithm](docs/MerkleSumTree.md#algorithm) section. Then at the last step we should obtain the root hash, we must assert that the hashes and the balances are equal to verify that the proof for that leaf is correct.
 
 The script to verify a leaf can be found in the `verify.py` script in the repository. Here we start with a merkle leaf node (consisting of a hash and balances) and the root hash then we must assert that the root hash and balances are equal to the obtained result.
 
