@@ -79,6 +79,8 @@ if __name__ == '__main__':
 
                 time.sleep(1)
                 print("\n")
+                print(f"User merkle leaf hash: {merkle_leaf_hash}\n")
+
                 obtained_hash, obtained_balances = verify_merkle_proof_from_leaf(
                     Node(bytes.fromhex(root_hash), to_decimal_balance(decode_balance(root_balances))),
                     proof,

@@ -1,9 +1,9 @@
 # Proof of Liabilities
 This repository consists of three scripts and a library that can be viewed as different tools:
 
-1.  The `merkle_leaf.py` script which given an id and an audit id generates the merkle leaf hash that is neccessary to verify a proof.
-2.  The `verify.py` script which given a proof, a merkle leaf and the root node, verifies that the proof is correct.
-3.  The `main.py` script which uses the library and an input file to create a Merkle Sum Tree and outputs the constructed tree and the proofs for each leaf of the tree.
+1.  The `verify.py` script which given a proof, a merkle leaf and the root node, verifies that the proof is correct.
+2.  The `main.py` script which uses the library and an input file to create a Merkle Sum Tree and outputs the constructed tree and the proofs for each leaf of the tree.
+3.  The `merkle_leaf.py` script which given an id and an audit id generates the merkle leaf hash that is neccessary to verify a proof. This script is used by `verify.py`, you don’t need to run this script by yourself
 
 The library can be found under the `lib` directory with the name `merkle.py` and it is a library to create and manage a Merkle Sum Tree.
 
@@ -16,10 +16,6 @@ In order to use the scripts provided, the following requirements are needed:
 - Python 3.9 or above
 
 # Usage
-
-## Obtaining the merkle leaf
-
-To obtain a merkle leaf one must follow the script defined in `merkle_leaf.py` where, given an unique identifier and an audit id we obtain a merkle leaf hash. After that, we can add the balances to get a complete merkle leaf, although this is not needed until the verification or generation of a proof is necessary.
 
 ## Verifying a Merkle Proof
 
@@ -109,6 +105,10 @@ Second output example:
 00a2ee33-713b-44df-b9cf-c78aaa32ff3c,"[{LEFT,bcb31f5742cd9a600115a84c8cb9f9422e877ab138239be5160a5c1c6488e5c4,ADA:33.55713700|ALGO:41.27807400|AVAX:0.10399078|AXS:0.02574917|BNB:0.01018535|BTC:19.10069634|DAI:13.22203900|ETH:0.01258170|LUNA:0.00064204|MATIC:69800.89997041|UNI:16.05900000|USDT:54599.82549300}]"
 00cf6625-9c3d-4e61-a17a-9820cae615cc,"[{RIGHT,c2eacf313cf93d1a77efaa27dee936ba526f65ce7cef0f510d8bb9f6ab59fd2e,BTC:0.00010052}]"
 ```
+
+## Obtaining the merkle leaf
+
+To obtain a merkle leaf one must follow the script defined in `merkle_leaf.py` where, given an unique identifier and an audit id we obtain a merkle leaf hash. After that, we can add the balances to get a complete merkle leaf.
 
 # Tests
 ## Unit Tests
