@@ -41,7 +41,7 @@ All the displayed keys must be included in the file or the script will fail.
 The execution of the script is as follows:
 
 ```bash
-python3 verify.py -i input/proof.csv -v root.json
+python3 verify.py -i input/proof.csv -r root.json
 ```
 
 Where, following the example described above the file `proof.csv` should contain the output of the `main.py` and some additional information.
