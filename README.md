@@ -27,7 +27,7 @@ The script defined in `verify.py` can be called with the following arguments:
 
 - `-i --input`: Defines the path to the file that will be used as input for the proof. When creating a Merkle Sum Tree the [outputs](#outputs) contain the proofs for all leafs.
 
-- `-v --variables`: Defines a json file with variables that is needed to run the script, an example of the file is:
+- `-r --root`: Defines a json file with the root node and hash algorithm that is needed to run the script, an example of the file is:
 
   ```json
   {
@@ -41,7 +41,7 @@ All the displayed keys must be included in the file or the script will fail.
 The execution of the script is as follows:
 
 ```bash
-python3 verify.py -i input/proof.csv -v var.json
+python3 verify.py -i input/proof.csv -v root.json
 ```
 
 Where, following the example described above the file `proof.csv` should contain the output of the `main.py` and some additional information.

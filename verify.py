@@ -21,11 +21,11 @@ def animate():
 def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', help='Relative path to the input file', required = True)
-    parser.add_argument('-v', '--variables', help='Relative path to json file with needed variables', required = True)
+    parser.add_argument('-r', '--root', help='Relative path to json file with needed root data and hash algorithm', required = True)
 
     args = parser.parse_args()
-    
-    return args.input, args.variables
+
+    return args.input, args.root
 
 def decode_balance(balance_str: str) -> dict[str, str]:
     new_balance_list: list[tuple[str, str]] = []
