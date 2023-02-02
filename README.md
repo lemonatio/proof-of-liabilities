@@ -3,7 +3,7 @@ This repository consists of three scripts and a library that can be viewed as di
 
 1.  The `verify.py` script which given a proof, a merkle leaf and the root node, verifies that the proof is correct.
 2.  The `main.py` script which uses the library and an input file to create a Merkle Sum Tree and outputs the constructed tree and the proofs for each leaf of the tree.
-3.  The `merkle_leaf.py` script which given an id and an audit id generates the merkle leaf hash that is neccessary to verify a proof. This script is used by `verify.py`, you don’t need to run this script by yourself
+3.  The `merkle_leaf.py` script which given an id and an audit id generates the merkle leaf hash that is neccessary to verify a proof. The creation of the merkle leaf is done by `verify.py`, you don’t need to run this script by yourself when verifying.
 
 The library can be found under the `lib` directory with the name `merkle.py` and it is a library to create and manage a Merkle Sum Tree.
 
@@ -21,7 +21,7 @@ In order to use the scripts provided, the following requirements are needed:
 
 The process of verifying a Merkle Proof is quite straightforward: From the leaf, combine at each step the current node with the node referenced in each step of the proof with the algorithm described in the [algorithm](docs/MerkleSumTree.md#algorithm) section. Then at the last step we should obtain the root hash, we must assert that the hashes and the balances are equal to verify that the proof for that leaf is correct.
 
-The script to verify a leaf can be found in the `verify.py` script in the repository. Here we start with a merkle leaf node (consisting of a hash and balances) and the root hash then we must assert that the root hash and balances are equal to the obtained result.
+The script to verify a leaf can be found in the `verify.py` script in the repository. Here we start with a merkle leaf node (consisting of a hash and balances) and the root node. We must assert that the root hash and balances are equal to the obtained hash and balances.
 
 The script defined in `verify.py` can be called with the following arguments:
 
@@ -41,17 +41,17 @@ All the displayed keys must be included in the file or the script will fail.
 The execution of the script is as follows:
 
 ```bash
-python3 verify.py -i input/proof.csv -r root.json
+python3 verify.py -i proof.csv -r root.json
 ```
 
-Where, following the example described above the file `proof.csv` should contain the output of the `main.py` and some additional information.
+Where, following the example described above the file `proof.csv` should contain one of the proofs that are obtained by running the `main.py` script and some additional information.
 
 ```
 id,balances,proof,audit_id
 00cf6625-9c3d-4e61-a17a-9820cae615cc,ADA:33.55713700|ALGO:41.27807400|AVAX:0.10399078|AXS:0.02574917|BNB:0.01018535|BTC:19.10069634|DAI:13.22203900|ETH:0.01258170|LUNA:0.00064204|MATIC:69800.89997041|UNI:16.05900000|USDT:54599.82549300,"[{RIGHT,c2eacf313cf93d1a77efaa27dee936ba526f65ce7cef0f510d8bb9f6ab59fd2e,BTC:0.00010052}]",2022-12-18-745ed8c9
 ```
 
-After adding the correct information in the variables file and a correct proof, the verification should be done correctly.
+After adding the correct information in the root file and a correct proof, the verification should be done correctly.
 
 ## Creating a Merkle Sum Tree
 
