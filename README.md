@@ -44,7 +44,7 @@ The execution of the script is as follows:
 python3 verify.py -i proof.csv -r root.json
 ```
 
-Where, following the example described above the file `proof.csv` should contain one of the proofs that are obtained by running the `main.py` script and some additional information.
+Where, following the example described below in the creationg of a MST, the file `proof.csv` could contain one of the proofs that are obtained by running the `main.py` script and some additional public information.
 
 ```
 id,balances,proof,audit_id
