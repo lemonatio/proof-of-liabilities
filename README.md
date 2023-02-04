@@ -15,6 +15,8 @@ In order to use the scripts provided, the following requirements are needed:
 
 - Python 3.9 or above
 
+Alternatively, if you don’t have python installed, you can use the dockerized version of the script.
+
 # Usage
 
 ## Verifying a Merkle Proof
