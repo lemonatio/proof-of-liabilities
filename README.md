@@ -46,7 +46,7 @@ The execution of the script is as follows:
 python3 verify.py -i proof.csv -r root.json
 ```
 
-In case python dependencies are not installed a dockerized version of the script with the official python images can be used:
+In case python dependencies are not installed, a dockerized version of the script with the official python images can be used:
 
 ```bash
 ./veryfy.sh -i proof.csv -r root.json
