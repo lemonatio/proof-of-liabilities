@@ -8,4 +8,4 @@ then
     exit
 fi
 
-docker run --rm -v $(pwd):/data -w /data python:3.9 python3 verify.py $@
+docker run --rm -v $(pwd):/data -w /data python:3.9-slim python3 verify.py $@
