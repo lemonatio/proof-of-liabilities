@@ -15,6 +15,8 @@ In order to use the scripts provided, the following requirements are needed:
 
 - Python 3.9 or above
 
+Alternatively, if you don't have python installed, for the `verify.py` script you can use the dockerized version.
+
 # Usage
 
 ## Verifying a Merkle Proof
@@ -42,6 +44,12 @@ The execution of the script is as follows:
 
 ```bash
 python3 verify.py -i proof.csv -r root.json
+```
+
+In case python dependencies are not installed, a dockerized version of the script with the official python images can be used:
+
+```bash
+./verify.sh -i proof.csv -r root.json
 ```
 
 Where, following the example described below in the creationg of a MST, the file `proof.csv` could contain one of the proofs that are obtained by running the `main.py` script and some additional public information.
