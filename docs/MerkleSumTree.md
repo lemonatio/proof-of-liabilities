@@ -1,4 +1,4 @@
-# Merkle Sum Tree
+9# Merkle Sum Tree
 
 A Merkle Sum Tree (MST) is a data structure that has the same properties that a Merkle Tree has with an extra field
 containing the balance of multiple assets. The leafs are labelled with the cryptopgraphic hash of the data block, in
