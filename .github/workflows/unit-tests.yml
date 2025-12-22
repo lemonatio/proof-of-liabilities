@@ -1,17 +1,21 @@
-name: Unit Tests
+   Pruebas    unitarias      Ramas             Director   Director.   Directo  pull_      Ramas       Director     Director traba   Prueb  Run-on   Ubuntu-última Ubuntu-últ   pasos  acciones/checkout@v3 acciones/checkout@v3  -nombreEjecutar pruebas unitarias nameEjecutar pruebas unitarias                     : 
+   Nombre : Pruebas
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+en: Empuje
 
-jobs:
-  tests-ci:
-    runs-on: ubuntu-latest
+trabajos:
+ CI :
+ Run-on : Ubuntu-última
+  pasos :
+ - nombre: "Mira el repositorio"
+  usos : acciones/checkout@v3
+ Con :
+ submódulos. : recursivo.
 
-    steps:
-      - uses: actions/checkout@v3
+ - nombre: "Instalar fundición"
+  usos : fundición-rs/fundería-cocina@v1
+ Con :
+  versión : Nocturno
 
-      - name: Run Unit Tests
-        run: python -m unittest discover -s test
+ - nombre: "Ejecutar pruebas de fundición"
+ Correr : Prueba de forja -vvv.
