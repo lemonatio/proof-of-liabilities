@@ -1,0 +1,18 @@
+name: Security
+
+on:
+  pull_request:
+    types: [synchronize, opened, reopened, ready_for_review]
+    branches: [main, master, develop, staging]
+  workflow_dispatch:
+    inputs:
+      full_analysis:
+        description: "Run full scan (true) or only diff (false)"
+        type: boolean
+        default: false
+
+jobs:
+  security-checks:
+    uses: lemonatio/workflows/.github/workflows/security-checks.yml@develop
+    with:
+      full_analysis: ${{ github.event_name == 'workflow_dispatch' && inputs.full_analysis || false }}
